@@ -22,6 +22,7 @@ public class MoneyTransferRepository implements TransferRepository {
 
     @Override
     public void save(AccountEntity accountEntity) {
+        entityManager.refresh(accountEntity);
         entityManager.persist(accountEntity);
     }
 }
