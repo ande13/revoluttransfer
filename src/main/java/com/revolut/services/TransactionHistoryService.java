@@ -1,0 +1,56 @@
+package com.revolut.services;
+
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import com.revolut.dao.TransactionRepository;
+import com.revolut.dao.entity.TransactionHistoryEntity;
+import org.hibernate.Session;
+
+import javax.persistence.EntityExistsException;
+import javax.persistence.EntityManager;
+import javax.persistence.TransactionRequiredException;
+import java.math.BigDecimal;
+
+@Singleton
+public class TransactionHistoryService implements TransactionService {
+
+    @Inject
+    private TransactionRepository transactionRepository;
+
+    private Session session;
+
+    @Inject
+    public void setSession(EntityManager entityManager) {
+        this.session = entityManager.unwrap(Session.class);
+    }
+
+
+    @Override
+    public TransactionHistoryEntity getByTransactionId(String transactionId) {
+        return transactionRepository.getByTransactionId(transactionId);
+    }
+
+    @Override
+    public void save(String transactionId, Long fromUser, Long toUser, BigDecimal previousFromUserBalance,
+                     BigDecimal previousToUserBalance, BigDecimal currentFromUserBalance, BigDecimal currentToUserBalance, BigDecimal amount) {
+
+        TransactionHistoryEntity transactionHistoryEntity = new TransactionHistoryEntity();
+        transactionHistoryEntity.setTransactionId(transactionId);
+        transactionHistoryEntity.setFromUser(fromUser);
+        transactionHistoryEntity.setToUser(toUser);
+        transactionHistoryEntity.setPreviousFromUserBalance(previousFromUserBalance);
+        transactionHistoryEntity.setCurrentFromUserBalance(currentFromUserBalance);
+        transactionHistoryEntity.setPreviousToUserBalance(previousToUserBalance);
+        transactionHistoryEntity.setCurrentToUserBalance(currentToUserBalance);
+        transactionHistoryEntity.setAmount(amount);
+
+
+        try {
+            session.getTransaction().begin();
+            transactionRepository.save(transactionHistoryEntity);
+            session.getTransaction().commit();
+        } catch (EntityExistsException | IllegalArgumentException| TransactionRequiredException ex) {
+            session.getTransaction().rollback();
+        }
+    }
+}

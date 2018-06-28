@@ -2,13 +2,13 @@ package com.revolut.dao;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.revolut.dao.entity.AccountEntity;
+import com.revolut.dao.entity.TransactionHistoryEntity;
 import org.hibernate.Session;
 
 import javax.persistence.EntityManager;
 
 @Singleton
-public class MoneyTransferRepository implements TransferRepository {
+public class TransactionHistoryRepository implements TransactionRepository {
 
     private Session session;
 
@@ -18,12 +18,12 @@ public class MoneyTransferRepository implements TransferRepository {
     }
 
     @Override
-    public AccountEntity getEntityById(long id) {
-        return session.get(AccountEntity.class, id);
+    public TransactionHistoryEntity getByTransactionId(String transactionId) {
+        return session.get(TransactionHistoryEntity.class, transactionId);
     }
 
     @Override
-    public void save(AccountEntity accountEntity) {
-        session.update(accountEntity);
+    public void save(TransactionHistoryEntity entity) {
+        session.save(entity);
     }
 }

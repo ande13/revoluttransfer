@@ -1,4 +1,4 @@
-package com.revolut.dao;
+package com.revolut.dao.entity;
 
 import javax.persistence.*;
 import java.math.BigDecimal;

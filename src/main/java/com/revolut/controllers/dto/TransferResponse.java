@@ -10,14 +10,16 @@ public class TransferResponse {
     private Long toUserId;
     private BigDecimal toUserBalance;
     private BigDecimal transferredAmount;
+    private String transactionId;
 
-    public TransferResponse(String message, Long fromUserId, BigDecimal fromUserBalance, Long toUserId, BigDecimal toUserBalance, BigDecimal transferredAmount) {
+    public TransferResponse(String message, Long fromUserId, BigDecimal fromUserBalance, Long toUserId, BigDecimal toUserBalance, BigDecimal transferredAmount, String transactionId) {
         this.message = message;
         this.fromUserId = fromUserId;
         this.fromUserBalance = fromUserBalance;
         this.toUserId = toUserId;
         this.toUserBalance = toUserBalance;
         this.transferredAmount = transferredAmount;
+        this.transactionId = transactionId;
     }
 
     public String getMessage() {
@@ -68,6 +70,14 @@ public class TransferResponse {
         this.transferredAmount = transferredAmount;
     }
 
+    public String getTransactionId() {
+        return transactionId;
+    }
+
+    public void setTransactionId(String transactionId) {
+        this.transactionId = transactionId;
+    }
+
     @Override
     public String toString() {
         return "TransferResponse{" +
@@ -77,6 +87,7 @@ public class TransferResponse {
                 ", toUserId=" + toUserId +
                 ", toUserBalance=" + toUserBalance +
                 ", transferredAmount=" + transferredAmount +
+                ", transactionId='" + transactionId + '\'' +
                 '}';
     }
 }
