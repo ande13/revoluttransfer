@@ -11,10 +11,8 @@ import javax.ws.rs.ext.Provider;
 public class AppExceptionMapper implements ExceptionMapper<Exception> {
     @Override
     public Response toResponse(Exception e) {
-        TransferResponse transferResponse = new TransferResponse();
-        transferResponse.setMessage(e.getMessage());
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                .entity(transferResponse).type(MediaType.APPLICATION_JSON_TYPE)
+                .entity(new TransferResponse(e.getMessage())).type(MediaType.APPLICATION_JSON_TYPE)
                 .build();
     }
 }

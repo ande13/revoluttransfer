@@ -1,7 +1,7 @@
 package com.revolut.server;
 
 import com.google.inject.servlet.GuiceFilter;
-import com.revolut.injection.InjectionContextListened;
+import com.revolut.injection.InjectionContextListener;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.webapp.WebAppContext;
@@ -29,7 +29,7 @@ public class JettyServer {
         servletHolder.setInitOrder(1);
 
         WebAppContext webAppContext = new WebAppContext();
-        webAppContext.addEventListener(new InjectionContextListened());
+        webAppContext.addEventListener(new InjectionContextListener());
         webAppContext.addServlet(servletHolder, "/*");
         webAppContext.addFilter(GuiceFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
         webAppContext.setResourceBase("resources");

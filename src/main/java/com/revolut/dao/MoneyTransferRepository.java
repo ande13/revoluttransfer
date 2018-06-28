@@ -6,17 +6,22 @@ import com.google.inject.Singleton;
 import javax.persistence.EntityManager;
 
 @Singleton
-public class MoneyTransferDAOImpl implements MoneyTransferDAO {
+public class MoneyTransferRepository implements TransferRepository {
 
     private EntityManager entityManager;
 
     @Inject
-    public MoneyTransferDAOImpl(EntityManager entityManager) {
+    public MoneyTransferRepository(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 
     @Override
-    public AccountEntity getAccountEntityById(long id) {
+    public AccountEntity getEntityById(long id) {
         return entityManager.find(AccountEntity.class, id);
+    }
+
+    @Override
+    public void save(AccountEntity accountEntity) {
+        entityManager.persist(accountEntity);
     }
 }

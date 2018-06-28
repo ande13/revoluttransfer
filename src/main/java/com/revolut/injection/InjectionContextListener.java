@@ -7,7 +7,7 @@ import com.google.inject.servlet.GuiceServletContextListener;
 import com.revolut.injection.modules.AppInjectorModule;
 import com.revolut.injection.modules.AppServletModule;
 
-public class InjectionContextListened extends GuiceServletContextListener {
+public class InjectionContextListener extends GuiceServletContextListener {
 
     @Override
     protected Injector getInjector() {
