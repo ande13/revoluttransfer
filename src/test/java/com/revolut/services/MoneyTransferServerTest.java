@@ -1,8 +1,8 @@
 package com.revolut.services;
 
 import com.google.inject.Inject;
+import com.revolut.controllers.dto.BaseResponse;
 import com.revolut.controllers.dto.TransferRequest;
-import com.revolut.controllers.dto.TransferResponse;
 import org.junit.Test;
 
 import java.math.BigDecimal;
@@ -23,7 +23,7 @@ public class MoneyTransferServerTest extends BaseTest {
 
         ExecutorService executorService = Executors.newFixedThreadPool(5);
 
-        List<Future<TransferResponse>> futures = new ArrayList<>();
+        List<Future<BaseResponse>> futures = new ArrayList<>();
 
         List<TransferRequest> requests = createRequests();
 
@@ -31,9 +31,9 @@ public class MoneyTransferServerTest extends BaseTest {
                 () -> moneyTransferService.transferMoney(r.getFromAccountId(), r.getToAccountId(), r.getAmount())
         )));
 
-        List<TransferResponse> responses = new ArrayList<>();
+        List<BaseResponse> responses = new ArrayList<>();
 
-        for (Future<TransferResponse> future : futures) {
+        for (Future<BaseResponse> future : futures) {
             while (!future.isDone()) {
                 Thread.sleep(100);
             }

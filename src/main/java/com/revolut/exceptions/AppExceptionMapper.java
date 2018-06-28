@@ -1,6 +1,6 @@
 package com.revolut.exceptions;
 
-import com.revolut.controllers.dto.TransferResponse;
+import com.revolut.controllers.dto.BaseResponse;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -12,7 +12,7 @@ public class AppExceptionMapper implements ExceptionMapper<Exception> {
     @Override
     public Response toResponse(Exception e) {
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                .entity(new TransferResponse(e.getMessage())).type(MediaType.APPLICATION_JSON_TYPE)
+                .entity(new BaseResponse(e.getMessage())).type(MediaType.APPLICATION_JSON_TYPE)
                 .build();
     }
 }

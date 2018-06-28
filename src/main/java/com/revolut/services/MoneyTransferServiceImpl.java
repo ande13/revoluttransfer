@@ -3,6 +3,7 @@ package com.revolut.services;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
+import com.revolut.controllers.dto.BaseResponse;
 import com.revolut.controllers.dto.TransferResponse;
 import com.revolut.dao.AccountEntity;
 import com.revolut.dao.TransferRepository;
@@ -16,7 +17,7 @@ public class MoneyTransferServiceImpl implements MoneyTransferService {
     private TransferRepository transferRepository;
 
     @Override
-    public TransferResponse transferMoney(Long fromAccountId, Long toAccountId, BigDecimal amount) {
+    public BaseResponse transferMoney(Long fromAccountId, Long toAccountId, BigDecimal amount) {
 
         Object fromAccountIdLock = AccountLockFactory.getLock(fromAccountId);
         Object toAccountIdLock = AccountLockFactory.getLock(toAccountId);
@@ -28,7 +29,7 @@ public class MoneyTransferServiceImpl implements MoneyTransferService {
                 }
             }
         } else {
-            synchronized (toAccountIdLock){
+            synchronized (toAccountIdLock) {
                 synchronized (fromAccountIdLock) {
                     return doWork(fromAccountId, toAccountId, amount);
                 }
@@ -36,26 +37,30 @@ public class MoneyTransferServiceImpl implements MoneyTransferService {
         }
     }
 
-    private TransferResponse doWork(Long fromAccountId, Long toAccountId, BigDecimal amount) {
+    private BaseResponse doWork(Long fromAccountId, Long toAccountId, BigDecimal amount) {
         AccountEntity from = transferRepository.getEntityById(fromAccountId);
         if (from == null) {
-            return new TransferResponse("Can't find account with id: " + fromAccountId);
+            return new BaseResponse("Can't find account.", fromAccountId);
         }
-
-        BigDecimal accountBalance = from.getAmountOfMoney().subtract(amount);
-        if (accountBalance.compareTo(BigDecimal.ZERO) < 0) {
-            return new TransferResponse("The operation is not permissible for account: " + fromAccountId);
-        }
-
-        from.setAmountOfMoney(accountBalance);
-
         AccountEntity to = transferRepository.getEntityById(toAccountId);
-        to.setAmountOfMoney(to.getAmountOfMoney().add(amount));
+        if (to == null) {
+            return new BaseResponse("Can't find account.", toAccountId);
+        }
+
+        BigDecimal fromAccountBalance = from.getBalance().subtract(amount);
+        if (fromAccountBalance.compareTo(BigDecimal.ZERO) < 0) {
+            return new BaseResponse("The operation is not permissible for account.", fromAccountId);
+        }
+
+        from.setBalance(fromAccountBalance);
+
+        BigDecimal toAccountBalance = to.getBalance().add(amount);
+        to.setBalance(toAccountBalance);
 
         save(from);
         save(to);
 
-        return new TransferResponse("The operation was successfully carried out! From Balance: " + accountBalance + ", To balance: " + to.getAmountOfMoney());
+        return new TransferResponse("The operation was successfully carried out!", fromAccountId, fromAccountBalance, toAccountId, toAccountBalance, amount);
     }
 
     @Transactional(rollbackOn = Exception.class)

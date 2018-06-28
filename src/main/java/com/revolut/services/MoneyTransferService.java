@@ -1,9 +1,9 @@
 package com.revolut.services;
 
-import com.revolut.controllers.dto.TransferResponse;
+import com.revolut.controllers.dto.BaseResponse;
 
 import java.math.BigDecimal;
 
 public interface MoneyTransferService{
-    TransferResponse transferMoney(Long fromAccountId, Long toAccountId, BigDecimal amount);
+    BaseResponse transferMoney(Long fromAccountId, Long toAccountId, BigDecimal amount);
 }

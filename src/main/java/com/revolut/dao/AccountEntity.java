@@ -12,8 +12,8 @@ public class AccountEntity {
     private Long id;
     @Column(name = "user_name")
     private String userName;
-    @Column(name = "amount_of_money")
-    private BigDecimal amountOfMoney;
+    @Column(name = "user_balance")
+    private BigDecimal balance;
 
     public Long getId() {
         return id;
@@ -31,11 +31,11 @@ public class AccountEntity {
         this.userName = userName;
     }
 
-    public BigDecimal getAmountOfMoney() {
-        return amountOfMoney;
+    public BigDecimal getBalance() {
+        return balance;
     }
 
-    public void setAmountOfMoney(BigDecimal amountOfMoney) {
-        this.amountOfMoney = amountOfMoney;
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
     }
 }
