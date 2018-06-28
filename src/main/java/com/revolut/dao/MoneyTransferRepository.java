@@ -2,8 +2,11 @@ package com.revolut.dao;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import org.hibernate.Session;
 
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
+import javax.persistence.TransactionRequiredException;
 
 @Singleton
 public class MoneyTransferRepository implements TransferRepository {
@@ -22,7 +25,13 @@ public class MoneyTransferRepository implements TransferRepository {
 
     @Override
     public void save(AccountEntity accountEntity) {
-        entityManager.refresh(accountEntity);
-        entityManager.persist(accountEntity);
+        Session unwrap = entityManager.unwrap(Session.class);
+        unwrap.getTransaction().begin();
+        try {
+            entityManager.persist(accountEntity);
+            unwrap.getTransaction().commit();
+        } catch (EntityExistsException | IllegalArgumentException| TransactionRequiredException ex) {
+            unwrap.getTransaction().rollback();
+        }
     }
 }

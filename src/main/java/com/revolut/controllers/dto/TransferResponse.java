@@ -2,7 +2,7 @@ package com.revolut.controllers.dto;
 
 import java.math.BigDecimal;
 
-public class TransferResponse extends BaseResponse {
+public class TransferResponse {
 
     private String message;
     private Long fromUserId;

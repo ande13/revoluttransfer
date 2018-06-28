@@ -38,4 +38,22 @@ public class AccountEntity {
     public void setBalance(BigDecimal balance) {
         this.balance = balance;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        AccountEntity that = (AccountEntity) o;
+
+        return id.equals(that.id) && userName.equals(that.userName) && balance.equals(that.balance);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id.hashCode();
+        result = 31 * result + userName.hashCode();
+        result = 31 * result + balance.hashCode();
+        return result;
+    }
 }

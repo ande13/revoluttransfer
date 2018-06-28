@@ -2,8 +2,8 @@ package com.revolut.controllers;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.revolut.controllers.dto.BaseResponse;
 import com.revolut.controllers.dto.TransferRequest;
+import com.revolut.controllers.dto.TransferResponse;
 import com.revolut.services.MoneyTransferService;
 
 import javax.ws.rs.Consumes;
@@ -23,7 +23,7 @@ public class MoneyTransferController {
     @Path("/transfermoney")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public BaseResponse transferMoney(TransferRequest transferRequest) {
+    public TransferResponse transferMoney(TransferRequest transferRequest) {
         return moneyTransferService.transferMoney(transferRequest.getFromAccountId(), transferRequest.getToAccountId(), transferRequest.getAmount());
     }
 }

@@ -1,7 +1,6 @@
 package com.revolut.services;
 
 import com.google.inject.Inject;
-import com.revolut.controllers.dto.BaseResponse;
 import com.revolut.controllers.dto.TransferRequest;
 import com.revolut.controllers.dto.TransferResponse;
 import com.revolut.dao.AccountEntity;
@@ -10,7 +9,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -35,7 +35,7 @@ public class MoneyTransferServicePositiveTest extends BaseTest {
         requests.forEach(r -> {
             AccountEntity from = transferRepository.getEntityById(r.getFromAccountId());
             AccountEntity to = transferRepository.getEntityById(r.getToAccountId());
-            Future<BaseResponse> future = executorService.submit(
+            Future<TransferResponse> future = executorService.submit(
                     () -> moneyTransferService.transferMoney(r.getFromAccountId(), r.getToAccountId(), r.getAmount()));
             results.add(new ResultWrapper(from, to, future));
         });
@@ -46,7 +46,7 @@ public class MoneyTransferServicePositiveTest extends BaseTest {
                 Thread.sleep(100);
             }
 
-            TransferResponse response = (TransferResponse) wrapper.currentResponse.get();
+            TransferResponse response = wrapper.currentResponse.get();
 
             AccountEntity previousFromData = wrapper.previousFromData;
             AccountEntity previousToData = wrapper.previousToData;
@@ -81,9 +81,9 @@ public class MoneyTransferServicePositiveTest extends BaseTest {
     private static class ResultWrapper {
         private AccountEntity previousFromData;
         private AccountEntity previousToData;
-        private Future<BaseResponse> currentResponse;
+        private Future<TransferResponse> currentResponse;
 
-        ResultWrapper(AccountEntity previousFromData, AccountEntity previousToData, Future<BaseResponse> currentResponse) {
+        ResultWrapper(AccountEntity previousFromData, AccountEntity previousToData, Future<TransferResponse> currentResponse) {
             this.previousFromData = previousFromData;
             this.previousToData = previousToData;
             this.currentResponse = currentResponse;

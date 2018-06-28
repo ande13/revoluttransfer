@@ -2,11 +2,10 @@ package com.revolut.services;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.inject.persist.Transactional;
-import com.revolut.controllers.dto.BaseResponse;
 import com.revolut.controllers.dto.TransferResponse;
 import com.revolut.dao.AccountEntity;
 import com.revolut.dao.TransferRepository;
+import com.revolut.exceptions.TransferException;
 
 import java.math.BigDecimal;
 
@@ -17,7 +16,7 @@ public class MoneyTransferServiceImpl implements MoneyTransferService {
     private TransferRepository transferRepository;
 
     @Override
-    public BaseResponse transferMoney(Long fromAccountId, Long toAccountId, BigDecimal amount) {
+    public TransferResponse transferMoney(Long fromAccountId, Long toAccountId, BigDecimal amount) {
 
         Object fromAccountIdLock = AccountLockFactory.getLock(fromAccountId);
         Object toAccountIdLock = AccountLockFactory.getLock(toAccountId);
@@ -37,19 +36,19 @@ public class MoneyTransferServiceImpl implements MoneyTransferService {
         }
     }
 
-    private BaseResponse doWork(Long fromAccountId, Long toAccountId, BigDecimal amount) {
+    private TransferResponse doWork(Long fromAccountId, Long toAccountId, BigDecimal amount) {
         AccountEntity from = transferRepository.getEntityById(fromAccountId);
         if (from == null) {
-            return new BaseResponse("Can't find account.", fromAccountId);
+            throw new TransferException("Can't find account.", fromAccountId);
         }
         AccountEntity to = transferRepository.getEntityById(toAccountId);
         if (to == null) {
-            return new BaseResponse("Can't find account.", toAccountId);
+            throw new TransferException("Can't find account.", toAccountId);
         }
 
         BigDecimal fromAccountBalance = from.getBalance().subtract(amount);
         if (fromAccountBalance.compareTo(BigDecimal.ZERO) < 0) {
-            return new BaseResponse("The operation is not permissible for account.", fromAccountId);
+            throw new TransferException("The operation is not permissible for account.", fromAccountId);
         }
 
         from.setBalance(fromAccountBalance);
@@ -63,7 +62,6 @@ public class MoneyTransferServiceImpl implements MoneyTransferService {
         return new TransferResponse("The operation was successfully carried out!", fromAccountId, fromAccountBalance, toAccountId, toAccountBalance, amount);
     }
 
-    @Transactional(rollbackOn = Exception.class)
     private void save(AccountEntity accountEntity) {
         transferRepository.save(accountEntity);
     }

@@ -1,18 +1,15 @@
 package com.revolut.controllers.dto;
 
-public class BaseResponse {
+public class ErrorResponse {
 
     private String errorMessage;
     private Long userId;
 
-    public BaseResponse() {
-    }
-
-    public BaseResponse(String errorMessage) {
+    public ErrorResponse(String errorMessage) {
         this.errorMessage = errorMessage;
     }
 
-    public BaseResponse(String errorMessage, Long userId) {
+    public ErrorResponse(String errorMessage, Long userId) {
         this.errorMessage = errorMessage;
         this.userId = userId;
     }

@@ -8,11 +8,12 @@ import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 @Provider
-public class AppExceptionMapper implements ExceptionMapper<Exception> {
+public class TransferExceptionMapper implements ExceptionMapper<TransferException> {
+
     @Override
-    public Response toResponse(Exception e) {
+    public Response toResponse(TransferException e) {
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                .entity(new ErrorResponse(e.getMessage())).type(MediaType.APPLICATION_JSON_TYPE)
+                .entity(new ErrorResponse(e.getMessage(), e.getUserId())).type(MediaType.APPLICATION_JSON_TYPE)
                 .build();
     }
 }
