@@ -13,6 +13,7 @@ import com.revolut.services.MoneyTransferService;
 import com.revolut.services.MoneyTransferServiceImpl;
 import com.revolut.services.TransactionHistoryService;
 import com.revolut.services.TransactionService;
+import org.glassfish.jersey.jackson.internal.jackson.jaxrs.json.JacksonJsonProvider;
 
 public class AppInjectorModule extends AbstractModule {
 
@@ -24,6 +25,7 @@ public class AppInjectorModule extends AbstractModule {
         bind(MoneyTransferService.class).to(MoneyTransferServiceImpl.class);
         bind(AppExceptionMapper.class).in(Singleton.class);
         bind(TransferExceptionMapper.class).in(Singleton.class);
+        bind(JacksonJsonProvider.class).in(Singleton.class);
         bind(TransactionService.class).to(TransactionHistoryService.class);
     }
 }
