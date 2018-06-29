@@ -6,7 +6,9 @@ Steps for running:
 3) open target folder
 4) run the next command in console: java -jar revolut-service.jar
 
-You must provide json message as request.
+Link for request: http://localhost:8080/revolut/transfermoney
+
+You must provide POST request with json message.
 
 Request format:
 ```json
