@@ -4,26 +4,17 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.revolut.dao.TransactionRepository;
 import com.revolut.dao.entity.TransactionHistoryEntity;
-import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 import javax.persistence.EntityExistsException;
-import javax.persistence.EntityManager;
 import javax.persistence.TransactionRequiredException;
 import java.math.BigDecimal;
 
 @Singleton
-public class TransactionHistoryService implements TransactionService {
+public class TransactionHistoryService extends AbstractTransferService implements TransactionService {
 
     @Inject
     private TransactionRepository transactionRepository;
-
-    private Session session;
-
-    @Inject
-    public void setSession(EntityManager entityManager) {
-        this.session = entityManager.unwrap(Session.class);
-    }
-
 
     @Override
     public TransactionHistoryEntity getByTransactionId(String transactionId) {
@@ -44,13 +35,14 @@ public class TransactionHistoryService implements TransactionService {
         transactionHistoryEntity.setCurrentToUserBalance(currentToUserBalance);
         transactionHistoryEntity.setAmount(amount);
 
+        Transaction transaction = getSession().getTransaction();
 
         try {
-            session.getTransaction().begin();
+            transaction.begin();
             transactionRepository.save(transactionHistoryEntity);
-            session.getTransaction().commit();
+            transaction.commit();
         } catch (EntityExistsException | IllegalArgumentException| TransactionRequiredException ex) {
-            session.getTransaction().rollback();
+            transaction.rollback();
         }
     }
 }
