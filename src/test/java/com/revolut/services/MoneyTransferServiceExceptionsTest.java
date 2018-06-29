@@ -37,6 +37,7 @@ public class MoneyTransferServiceExceptionsTest extends BaseTest {
         params.add(new Object[]{123L, 2000L, new BigDecimal(1000), "Can't find account."});
         params.add(new Object[]{1000L, 124L, new BigDecimal(1000), "Can't find account."});
         params.add(new Object[]{123L, 124L, new BigDecimal(100000), "The operation is not permissible for account."});
+        params.add(new Object[]{123L, 123L, new BigDecimal(1000), "Transfer within your account is not supported."});
         return params;
     }
 

@@ -36,6 +36,10 @@ public class MoneyTransferServiceImpl extends AbstractTransferService implements
             throw new TransferException("Amount is not set.", fromAccountId);
         }
 
+        if (fromAccountId.equals(toAccountId)) {
+            throw new TransferException("Transfer within your account is not supported.", fromAccountId);
+        }
+
         Object fromAccountIdLock = AccountLockFactory.getLock(fromAccountId);
         Object toAccountIdLock = AccountLockFactory.getLock(toAccountId);
 
