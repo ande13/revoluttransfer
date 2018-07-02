@@ -10,32 +10,20 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class MoneyTransferServicePositiveTest extends BaseTest {
+public class MoneyTransferServicePositiveTest extends AbstractMoneyTransferServiceTest {
 
-    @Inject
-    private MoneyTransferService moneyTransferService;
     @Inject
     private TransactionService transactionService;
 
     @Test
     public void moneyTransferTest() throws ExecutionException, InterruptedException {
 
-        ExecutorService executorService = Executors.newFixedThreadPool(5);
-
-        List<Future<TransferResponse>> results = new ArrayList<>();
-
-        List<TransferRequest> requests = createRequests();
-
-        requests.forEach(r -> results.add(executorService.submit(() -> moneyTransferService.transferMoney(r.getFromAccountId(), r.getToAccountId(), r.getAmount()))));
-
-        for (Future<TransferResponse> result : results) {
+        for (Future<TransferResponse> result : transferMoney()) {
 
             while (!result.isDone()) {
                 Thread.sleep(100);
@@ -56,7 +44,7 @@ public class MoneyTransferServicePositiveTest extends BaseTest {
 
     }
 
-    private List<TransferRequest> createRequests() {
+    public List<TransferRequest> createRequests() {
         List<TransferRequest> requests = new ArrayList<>();
         requests.add(createRequest(123L, 124L, new BigDecimal(1000)));
         requests.add(createRequest(124L, 123L, new BigDecimal(2500)));
@@ -64,13 +52,5 @@ public class MoneyTransferServicePositiveTest extends BaseTest {
         requests.add(createRequest(125L, 123L, new BigDecimal(1455)));
         requests.add(createRequest(125L, 123L, new BigDecimal(1455)));
         return requests;
-    }
-
-    private TransferRequest createRequest(Long fromAccountId, Long toAccountId, BigDecimal amount) {
-        TransferRequest request = new TransferRequest();
-        request.setFromAccountId(fromAccountId);
-        request.setToAccountId(toAccountId);
-        request.setAmount(amount);
-        return request;
     }
 }
