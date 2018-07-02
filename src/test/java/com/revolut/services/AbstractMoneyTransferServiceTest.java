@@ -18,18 +18,16 @@ public abstract class AbstractMoneyTransferServiceTest extends BaseTest {
 
     public abstract List<TransferRequest> createRequests();
 
-    public List<Future<TransferResponse>> transferMoney() {
+    List<Future<TransferResponse>> transferMoney() {
 
         ExecutorService executorService = Executors.newFixedThreadPool(5);
 
-        List<TransferRequest> requests = createRequests();
-
-        return requests.stream().map(r -> executorService.submit(
+        return createRequests().stream().map(r -> executorService.submit(
                 () -> moneyTransferService.transferMoney(r.getFromAccountId(), r.getToAccountId(), r.getAmount())
         )).collect(Collectors.toList());
     }
 
-    protected TransferRequest createRequest(Long fromAccountId, Long toAccountId, BigDecimal amount) {
+    TransferRequest createRequest(Long fromAccountId, Long toAccountId, BigDecimal amount) {
         TransferRequest request = new TransferRequest();
         request.setFromAccountId(fromAccountId);
         request.setToAccountId(toAccountId);
